@@ -1,0 +1,15 @@
+classDiagram
+
+    MessageBridgeRunner --> IQueueInformationParser
+    MessageBridgeRunner --> MessageBridgeFactory
+    MessageBridgeFactory --> SubscriberFactory
+    MessageBridgeFactory --> ProcessorFactory
+    MessageBridge --* MessageBridgeFactory
+    MessageBridgeRunner : + void Start()
+    MessageBridgeRunner : + void Dispose()
+    MessageBridgeRunner : + void Stop()
+    MessageBridgeRunner : - void InitSubscribers()
+    MessageBridgeRunner : - IReadOnlyList<QueueInformation> GetAllLocalMessageBridgeQueues()
+    MessageBridgeFactory : + IDisposable CreateMessageBridge(QueueInformation)
+    MessageBridgeFactory : - IDisposable CreateMessageBridgeInternal<T, R>(...)
+    MessageBridge : + void Dispose()

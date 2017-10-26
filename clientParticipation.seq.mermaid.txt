@@ -1,0 +1,17 @@
+sequenceDiagram
+
+    participant EPM as ExperimentParticipationModule
+    participant SEPS as SiteExperimentParticipationService : IExperimentParticipationService
+    participant PBS as MsmqParticipationBatchClient : IParticipationBatchSource
+    participant Plsr as MsmqPublisher<ParticipationBatch> : IPublisher<ParticipationBatch>
+    participant Msgq as MessageQueue
+
+    EPM->>SEPS: RecordParticipationBatch
+    SEPS->>SEPS: GetParticipationBatch
+    SEPS->>PBS: EnqueueSource(ParticipationBatch)
+    PBS->>Plsr: Push(Value)
+    Plsr->>Msgq: Send(Message, MessageKey)
+    Msgq-->>Plsr: return
+    Plsr-->>PBS: return
+    PBS-->>SEPS: return
+    SEPS-->>EPM: return

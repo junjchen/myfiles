@@ -1,0 +1,17 @@
+sequenceDiagram
+
+    participant C as Controllers
+    participant AS as AnalyticsService
+    participant PESc as MsmqPageEventClient : IPageEventSource
+    participant Plsr as MsmqPublisher<PageEvent> : IPublisher<PageEvent>
+    participant Msgq as MessageQueue
+
+    C->>AS: InsertPageEvent(AnalyticsEvent)
+    AS->>AS: InsertPageEvent(IEnumerable<AnalyticsEvent>)
+    AS->>PESc: EnqueueSource(pageEvent)
+    PESc->>Plsr: Push(Value)
+    Plsr->>Msgq: Send(Message, MessageKey)
+    Msgq-->>Plsr: return
+    Plsr-->>PESc: return
+    PESc-->AS: return
+    AS-->>C: return
